@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7f9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="US Market">
+  <title>US Market</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f5bd3'/%3E%3Cpolyline points='5,22 12,15 17,19 27,8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232f5bd3'/%3E%3Cpolyline points='5,22 12,15 17,19 27,8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav" aria-label="Sections">
+      <a href="#market" data-page="market">Market</a>
+      <a href="#etfs" data-page="etfs">ETFs</a>
+      <a href="#stocks" data-page="stocks">Stocks</a>
+      <a href="#history" data-page="history">History</a>
+    </nav>
+
+    <div id="banner"></div>
+    <main id="app"><div class="muted loading">Loading…</div></main>
+
+    <details class="exp" id="settings">
+      <summary>⚙ Settings &amp; data sources</summary>
+      <div class="exp-body">
+        <label class="switch">
+          <input type="checkbox" id="demo-toggle">
+          <span class="slider" aria-hidden="true"></span>
+          <span>Demo mode (invented mock data)</span>
+        </label>
+        <button type="button" class="btn" id="refresh-btn">↻ Refresh data now</button>
+        <p class="legend">
+          <b>Data labels</b><br>
+          Live — updated within the last few minutes<br>
+          Delayed — normal for this site (data is updated about hourly on weekdays)<br>
+          Stale — older than expected; don't rely on it<br>
+          Unavailable — could not be loaded<br>
+          MOCK DATA — invented, Demo mode only
+        </p>
+        <p class="muted" id="data-info"></p>
+      </div>
+    </details>
+    <div class="muted footer">Personal research tool · not financial advice · never places orders</div>
+  </div>
+
+  <noscript><p style="padding:16px">This dashboard needs JavaScript switched on.</p></noscript>
+
+  <!-- Chart library (saved in this project, no internet needed for it) -->
+  <script src="lib/chart.umd.min.js"></script>
+  <!-- 1. settings  2. data  3. scoring  4. page drawing -->
+  <script src="config.js"></script>
+  <script src="data.js"></script>
+  <script src="scoring.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
