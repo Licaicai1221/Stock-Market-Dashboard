@@ -4,6 +4,8 @@
  * No scoring rules live here; they are all in scoring.js.
  */
 (function () {
+  // Stop early (index.html then shows which file is missing) if a core file did not load.
+  if (!window.CONFIG || !window.Data || !window.Scoring) return;
   const C = window.CONFIG, D = window.Data, S = window.Scoring;
   const COLORS = { line: "#2f5bd3", ma: "#b26a00", muted: "#5f6b7a", grid: "#e6e9ef", ink: "#1d2430",
     red: "#c62828", bgRed: "#fdeaea", bgAmber: "#fff3e0", bgGreen: "#e7f5ec" };
@@ -72,9 +74,12 @@
   const expander = (title, body, attrs = "") => `<details class="exp" ${attrs}><summary>${esc(title)}</summary><div class="exp-body">${body}</div></details>`;
 
   // ================================================================ charts (ui/charts.py, Chart.js version)
-  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
-  Chart.defaults.font.size = 12;
-  Chart.defaults.color = COLORS.muted;
+  const HAS_CHART = typeof window.Chart !== "undefined";  // false if lib/chart.umd.min.js is missing
+  if (HAS_CHART) {
+    Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+    Chart.defaults.font.size = 12;
+    Chart.defaults.color = COLORS.muted;
+  }
 
   const bandsPlugin = {  // shaded red/amber/green bands behind the score line
     id: "scoreBands",
@@ -127,6 +132,12 @@
   function lineChart(id, series, o = {}) {
     const el = document.getElementById(id);
     if (!el || !series || !series.values.length) return;
+    if (!HAS_CHART) {
+      const box = el.parentElement;
+      box.style.height = "auto";
+      box.innerHTML = '<p class="muted">Chart unavailable: the file lib/chart.umd.min.js was not found.</p>';
+      return;
+    }
     const suffix = o.suffix || "";
     const hd = o.hoverDigits ?? 2;
     const datasets = [{ data: series.values, borderColor: COLORS.line, borderWidth: 2, pointRadius: 0,
@@ -476,6 +487,15 @@
   }
 
   async function load() {
+    try {
+      await loadInner();
+    } catch (err) {
+      app.innerHTML = `<div class="error-banner"><b>Something went wrong while drawing the dashboard.</b><br>${esc(err && err.message)}</div>`;
+      console.error(err);
+    }
+  }
+
+  async function loadInner() {
     const demo = isDemo();
     document.getElementById("demo-toggle").checked = demo;
     app.innerHTML = `<div class="muted loading">Loading…</div>`;

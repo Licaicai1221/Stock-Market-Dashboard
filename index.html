@@ -10,6 +10,31 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f5bd3'/%3E%3Cpolyline points='5,22 12,15 17,19 27,8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232f5bd3'/%3E%3Cpolyline points='5,22 12,15 17,19 27,8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
+  <script>
+    // Start-up check: if a script file is missing or broken, say which one
+    // instead of showing "Loading…" forever.
+    window.__startupProblems = [];
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (t && t.tagName === "SCRIPT" && t.id !== "market-data-script") {
+        window.__startupProblems.push("Missing file: " + t.getAttribute("src"));
+      } else if (e.message) {
+        window.__startupProblems.push("Error: " + e.message + (e.filename ? " (" + e.filename.split("/").pop() + ")" : ""));
+      }
+    }, true);
+    window.addEventListener("load", function () {
+      setTimeout(function () {
+        if (window.App) return;
+        var box = document.getElementById("app");
+        var list = window.__startupProblems.length ? window.__startupProblems : ["Unknown problem — see the browser console."];
+        box.innerHTML = '<div class="error-banner"><b>The dashboard could not start.</b><br>' +
+          list.map(function (s) { return s.replace(/[<>&]/g, ""); }).join("<br>") +
+          '<br><br>Check that every file is in your GitHub repository with the same folder layout as the zip: ' +
+          'index.html, style.css, config.js, data.js, scoring.js, script.js in the top folder, and ' +
+          'lib/chart.umd.min.js and data/market.js in their subfolders. File names are case-sensitive.</div>';
+      }, 1500);
+    });
+  </script>
 </head>
 <body>
   <div class="page">
